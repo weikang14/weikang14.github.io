@@ -1,7 +1,7 @@
 name: Keep HF Space Alive
 on:
   schedule:
-    - cron: '0 */15 * * * *'  # 每15分钟触发一次
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 jobs:
