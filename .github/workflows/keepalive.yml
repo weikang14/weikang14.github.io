@@ -1,7 +1,7 @@
 name: Keep HF Space Alive
 on:
   schedule:
-    - cron: '0 */6 * * *'  # 每6小时触发一次
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
@@ -9,4 +9,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ping HF Space
-        run: curl -L https://huggingface.co/spaces/cwk14/gold-manus-ai
+        run: curl -L https://cwk14-gold-manus-ai.hf.space
