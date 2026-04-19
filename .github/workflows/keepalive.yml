@@ -1,0 +1,20 @@
+name: Restart HF Spaces
+
+on:
+  workflow_dispatch:
+
+jobs:
+  restart:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Restart Space
+        run: |
+          echo "Restarting..."
+          curl -L https://cwk14-gold-manus-ai.hf.space/?restart=$(date +%s)
+
+      - name: Wait
+        run: sleep 30
+
+      - name: Check
+        run: curl -I https://cwk14-gold-manus-ai.hf.space/
