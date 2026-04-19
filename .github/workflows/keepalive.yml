@@ -8,13 +8,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Restart Space
+      - name: Restart
         run: |
-          echo "Restarting..."
-          curl -L https://cwk14-gold-manus-ai.hf.space/?restart=$(date +%s)
+          curl -L --retry 5 --retry-delay 5 \
+          "https://cwk14-gold-manus-ai.hf.space/?restart=$(date +%s)" || true
 
       - name: Wait
         run: sleep 30
 
       - name: Check
-        run: curl -I https://cwk14-gold-manus-ai.hf.space/
+        run: curl -I https://cwk14-gold-manus-ai.hf.space/ || true
