@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f0f0f">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Gold Bot">
+<title>Gold Bot 重启</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #0f0f0f; color: #fff;
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  .card {
+    background: #1a1a1a; border: 1px solid #2a2a2a;
+    border-radius: 20px; padding: 36px 28px;
+    width: 100%; max-width: 360px; text-align: center;
+  }
+  .logo { font-size: 52px; margin-bottom: 12px; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .sub {
+    color: #666; font-size: 13px; margin-bottom: 28px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .gear-btn {
+    background: none; border: none; color: #555; font-size: 15px;
+    cursor: pointer; padding: 2px 4px; border-radius: 4px; transition: color 0.2s;
+  }
+  .gear-btn:hover { color: #aaa; }
+  .token-section {
+    background: #111; border: 1px solid #2a2a2a;
+    border-radius: 14px; padding: 16px; margin-bottom: 20px; text-align: left;
+  }
+  .token-section label { display: block; font-size: 12px; color: #888; margin-bottom: 6px; font-weight: 500; }
+  .token-note { font-size: 11px; color: #555; margin-bottom: 10px; line-height: 1.5; }
+  .token-note a { color: #f5a623; text-decoration: none; }
+  .token-section input {
+    width: 100%; background: #0a0a0a; border: 1px solid #333;
+    border-radius: 8px; padding: 10px 12px; color: #fff;
+    font-size: 13px; outline: none; margin-bottom: 10px; font-family: monospace;
+  }
+  .token-section input:focus { border-color: #f5a623; }
+  .save-btn {
+    width: 100%; background: #222; border: 1px solid #333;
+    border-radius: 8px; color: #ccc; font-size: 13px;
+    padding: 9px; cursor: pointer; transition: all 0.2s;
+  }
+  .save-btn:hover { border-color: #555; color: #fff; }
+  .status-row {
+    display: flex; align-items: center; background: #111;
+    border-radius: 12px; padding: 11px 14px; margin-bottom: 16px; font-size: 13px;
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #555; flex-shrink: 0; transition: background 0.3s; }
+  .dot.online  { background: #22c55e; box-shadow: 0 0 8px #22c55e66; }
+  .dot.offline { background: #ef4444; box-shadow: 0 0 8px #ef444466; }
+  .dot.loading { background: #f5a623; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .status-text { flex: 1; margin-left: 10px; color: #bbb; }
+  .check-link { color: #666; font-size: 12px; cursor: pointer; background: none; border: none; }
+  .check-link:hover { color: #aaa; }
+  .btn-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .btn {
+    width: 100%; padding: 16px; border-radius: 12px; border: none;
+    font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .btn-primary { background: linear-gradient(135deg, #f5a623, #e8901a); color: #000; }
+  .btn-secondary {
+    background: #1e1e1e; border: 1px solid #333; color: #ccc;
+    font-size: 14px; padding: 12px;
+  }
+  .btn-secondary:hover:not(:disabled) { border-color: #555; color: #fff; }
+  .result {
+    margin-top: 4px; padding: 13px 14px; border-radius: 11px; font-size: 13px;
+    display: none; text-align: left; line-height: 1.6; white-space: pre-wrap;
+  }
+  .result.success { background: #0d2218; border: 1px solid #22c55e33; color: #4ade80; }
+  .result.error   { background: #220d0d; border: 1px solid #ef444433; color: #f87171; }
+  .result.info    { background: #1a150a; border: 1px solid #f5a62333; color: #fbbf24; }
+  .divider { border: none; border-top: 1px solid #1e1e1e; margin: 20px 0; }
+  .how-to {
+    background: #111; border-radius: 12px; padding: 14px;
+    text-align: left; font-size: 12px; color: #555; line-height: 1.9;
+  }
+  .how-to strong { color: #777; display: block; margin-bottom: 2px; }
+  .footer { margin-top: 20px; font-size: 12px; color: #444; display: flex; gap: 14px; justify-content: center; }
+  .footer a { color: #555; text-decoration: none; }
+  .footer a:hover { color: #999; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">⚡</div>
+  <h1>Gold Bot 重启</h1>
+  <div class="sub">
+    cwk14/gold-manus-ai
+    <button class="gear-btn" onclick="showSettings()" title="修改 Token">⚙️</button>
+  </div>
+
+  <div class="token-section" id="tokenSection">
+    <label>GitHub Personal Access Token</label>
+    <p class="token-note">
+      需要有 <strong style="color:#f5a623">workflow</strong> 权限的 token。<br>
+      <a href="https://github.com/settings/personal-access-tokens/new" target="_blank">
+        → 点此创建 Fine-grained Token
+      </a><br>
+      Repository: weikang14.github.io<br>
+      Permissions: Actions → Read &amp; Write
+    </p>
+    <input type="password" id="tokenInput" placeholder="github_pat_xxxx 或 ghp_xxxx" autocomplete="off">
+    <button class="save-btn" onclick="saveToken()">💾 保存（只需填一次）</button>
+  </div>
+
+  <div class="status-row">
+    <div class="dot" id="dot"></div>
+    <span class="status-text" id="statusText">未检查</span>
+    <button class="check-link" onclick="checkStatus()">刷新</button>
+  </div>
+
+  <div class="btn-group">
+    <button class="btn btn-primary" id="restartBtn" onclick="triggerRestart()">
+      🔄 一键重启 Space
+    </button>
+    <button class="btn btn-secondary" onclick="window.open('https://huggingface.co/spaces/cwk14/gold-manus-ai','_blank')">
+      🌐 打开 HF Space
+    </button>
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <hr class="divider">
+  <div class="how-to">
+    <strong>📋 工作原理</strong>
+    ① 点重启 → 触发 GitHub Actions<br>
+    ② Actions 从服务器调用 HF API（绕过 CORS）<br>
+    ③ HF Space 被唤醒重启（约 30–60 秒）<br>
+    ④ Telegram 收到 🟢 上线通知
+  </div>
+</div>
+
+<div class="footer">
+  <a href="https://github.com/weikang14/weikang14.github.io/actions" target="_blank">GitHub Actions</a>
+  <a href="https://huggingface.co/spaces/cwk14/gold-manus-ai" target="_blank">HF Space</a>
+</div>
+
+<script>
+const SPACE_URL   = "https://cwk14-gold-manus-ai.hf.space/";
+const GH_OWNER    = "weikang14";
+const GH_REPO     = "weikang14.github.io";
+const GH_WORKFLOW = "keepalive.yml";
+
+function getToken() {
+  return document.getElementById("tokenInput").value.trim()
+      || localStorage.getItem("gh_token") || "";
+}
+
+function saveToken() {
+  const t = getToken();
+  if (!t) { showResult("❌ Token 不能为空", "error"); return; }
+  localStorage.setItem("gh_token", t);
+  document.getElementById("tokenSection").style.display = "none";
+  showResult("✅ Token 已保存到本地，下次打开无需重填", "success");
+}
+
+function showSettings() {
+  const s = document.getElementById("tokenSection");
+  s.style.display = s.style.display === "none" ? "block" : "none";
+}
+
+window.onload = () => {
+  if (localStorage.getItem("gh_token"))
+    document.getElementById("tokenSection").style.display = "none";
+  checkStatus();
+};
+
+async function checkStatus() {
+  const dot = document.getElementById("dot");
+  const txt = document.getElementById("statusText");
+
+  dot.className = "dot loading";
+  txt.textContent = "检查中...";
+
+  try {
+    // 使用 no-cors 避免浏览器跨域阻止
+    await fetch(SPACE_URL + "?t=" + Date.now(), {
+      method: "GET",
+      mode: "no-cors",
+      cache: "no-store"
+    });
+
+    // no-cors 模式无法读取 status，因此只要不报错即认为在线
+    dot.className = "dot online";
+    txt.textContent = "🟢 Space 可能在线";
+
+  } catch (e) {
+    dot.className = "dot offline";
+    txt.textContent = "🔴 无法连接（可能被 CORS 阻止）";
+  }
+}
+
+async function triggerRestart() {
+  const token = getToken();
+  if (!token) {
+    showResult("❌ 请先填写 GitHub Token", "error");
+    document.getElementById("tokenSection").style.display = "block";
+    return;
+  }
+  const btn = document.getElementById("restartBtn");
+  btn.disabled = true; btn.textContent = "⏳ 发送中...";
+  showResult("🔄 正在触发 GitHub Actions...", "info");
+
+  try {
+    const r = await fetch(
+      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/actions/workflows/${GH_WORKFLOW}/dispatches`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `token ${token}`,
+          "Accept": "application/vnd.github+json",
+          "Content-Type": "application/json",
+          "X-GitHub-Api-Version": "2022-11-28"
+        },
+        body: JSON.stringify({ ref: "main" })
+      }
+    );
+
+    if (r.status === 204) {
+      showResult(
+        "✅ 重启指令已发送！\n\n" +
+        "GitHub Actions 正在运行（约 30 秒）\n" +
+        "完成后 Telegram 会收到 🟢 上线通知\n\n" +
+        "60 秒后将自动检查 Space 状态...",
+        "success"
+      );
+      btn.textContent = "⏳ 重启中（60s）...";
+      setTimeout(() => {
+        checkStatus();
+        btn.disabled = false;
+        btn.textContent = "🔄 一键重启 Space";
+      }, 60000);
+
+    } else if (r.status === 401 || r.status === 403) {
+      localStorage.removeItem("gh_token");
+      document.getElementById("tokenInput").value = "";
+      document.getElementById("tokenSection").style.display = "block";
+      showResult(
+        "❌ GitHub Token 无效或权限不足\n\n" +
+        "请确认：\n" +
+        "• Token 有 Actions: Read & Write 权限\n" +
+        "• Token 绑定了 weikang14.github.io 仓库\n\n" +
+        "已清除旧 Token，请重新填写",
+        "error"
+      );
+      btn.disabled = false; btn.textContent = "🔄 一键重启 Space";
+
+    } else {
+      const body = await r.text().catch(() => "");
+      showResult(`❌ 失败 (${r.status})\n${body.slice(0, 200)}`, "error");
+      btn.disabled = false; btn.textContent = "🔄 一键重启 Space";
+    }
+  } catch(e) {
+    showResult(`❌ 网络错误: ${e.message}`, "error");
+    btn.disabled = false; btn.textContent = "🔄 一键重启 Space";
+  }
+}
+
+function showResult(msg, type) {
+  const el = document.getElementById("result");
+  el.style.display = "block"; el.className = `result ${type}`; el.textContent = msg;
+}
+</script>
+</body>
+</html>
